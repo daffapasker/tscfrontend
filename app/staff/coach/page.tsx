@@ -220,24 +220,31 @@ export default function CoachPage() {
     setFormError(null);
 
     if (!coachToEdit?._id) return;
+
     if (selectedSchoolIds.length === 0) {
       setFormError("Pilih minimal satu sekolah binaan");
       return;
     }
-    if (password.length < 6) {
-      setFormError("Kata sandi wajib diisi & minimal harus 6 karakter");
+
+    if (password && password.length < 6) {
+      setFormError("Kata sandi minimal harus 6 karakter");
       return;
+    }
+
+    const payload: any = {
+      name: name.trim(),
+      birthdate: new Date(birthdate),
+      schoolIds: selectedSchoolIds,
+    };
+
+    if (password.trim()) {
+      payload.password = password;
     }
 
     updateCoach.mutate(
       {
         id: coachToEdit._id,
-        payload: {
-          name: name.trim(),
-          password,
-          birthdate: new Date(birthdate),
-          schoolIds: selectedSchoolIds,
-        },
+        payload,
       },
       {
         onSuccess: () => {
@@ -381,10 +388,10 @@ export default function CoachPage() {
                         <Calendar className="h-3.5 w-3.5 text-muted-foreground/50" />
                         {c.birthdate
                           ? new Date(c.birthdate).toLocaleDateString("id-ID", {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            })
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })
                           : "—"}
                       </div>
                     </TableCell>
@@ -492,10 +499,10 @@ export default function CoachPage() {
                   value={
                     selectedCoach.birthdate
                       ? new Date(selectedCoach.birthdate).toLocaleDateString("id-ID", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                      })
                       : "—"
                   }
                 />
@@ -573,9 +580,8 @@ export default function CoachPage() {
               <Input
                 placeholder="Masukkan nama lengkap pelatih"
                 {...createForm.register("name")}
-                className={`h-8 text-[13px] rounded-lg border-border/60 focus-visible:ring-1 focus-visible:ring-violet-500/40 ${
-                  createForm.formState.errors.name ? "border-red-500" : ""
-                }`}
+                className={`h-8 text-[13px] rounded-lg border-border/60 focus-visible:ring-1 focus-visible:ring-violet-500/40 ${createForm.formState.errors.name ? "border-red-500" : ""
+                  }`}
               />
               {createForm.formState.errors.name && (
                 <span className="text-[11px] text-red-500">{createForm.formState.errors.name.message}</span>
@@ -588,9 +594,8 @@ export default function CoachPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Masukkan kata sandi"
                   {...createForm.register("password")}
-                  className={`h-8 text-[13px] rounded-lg border-border/60 pr-8 focus-visible:ring-1 focus-visible:ring-violet-500/40 ${
-                    createForm.formState.errors.password ? "border-red-500" : ""
-                  }`}
+                  className={`h-8 text-[13px] rounded-lg border-border/60 pr-8 focus-visible:ring-1 focus-visible:ring-violet-500/40 ${createForm.formState.errors.password ? "border-red-500" : ""
+                    }`}
                 />
                 <Lock className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/60" />
 
@@ -613,9 +618,8 @@ export default function CoachPage() {
               <Input
                 type="date"
                 {...createForm.register("birthdate")}
-                className={`h-8 text-[13px] rounded-lg border-border/60 focus-visible:ring-1 focus-visible:ring-violet-500/40 ${
-                  createForm.formState.errors.birthdate ? "border-red-500" : ""
-                }`}
+                className={`h-8 text-[13px] rounded-lg border-border/60 focus-visible:ring-1 focus-visible:ring-violet-500/40 ${createForm.formState.errors.birthdate ? "border-red-500" : ""
+                  }`}
               />
               {createForm.formState.errors.birthdate && (
                 <span className="text-[11px] text-red-500">{createForm.formState.errors.birthdate.message}</span>
@@ -631,7 +635,7 @@ export default function CoachPage() {
                   schools.map((sch) => {
                     const selectedIds = createForm.watch("schoolIds") || [];
                     const isChecked = selectedIds.includes(sch._id!);
-                    
+
                     return (
                       <label
                         key={sch._id}
@@ -712,7 +716,7 @@ export default function CoachPage() {
                   placeholder="Ketik kata sandi (Wajib karena validasi backend)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
+
                   className="h-8 pl-8 text-[13px] rounded-lg border-border/60 focus-visible:ring-1 focus-visible:ring-violet-500/40"
                 />
                 <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/60" />

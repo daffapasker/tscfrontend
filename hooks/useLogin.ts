@@ -63,7 +63,7 @@ export default function useLogin() {
         if (role === "pengurus") {
           router.push("/staff/dashboard");
         } else if (role === "pelatih") {
-          router.push("/coach/dashboard");
+          router.push("/coach/athlete");
         } else {
           router.push("/");
         }

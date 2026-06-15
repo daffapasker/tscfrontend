@@ -22,7 +22,7 @@ export default function CoachDashboardPage() {
     async function loadData() {
       try {
         const [athleteRes, schoolRes] = await Promise.all([
-          athleteService.list(),
+          athleteService.getByCoach(),
           schoolService.list(),
         ]);
 
@@ -104,42 +104,8 @@ export default function CoachDashboardPage() {
       </div>
 
       {/* ── Quick Access ── */}
-      <div className="rounded-2xl border border-border/50 bg-card p-6 shadow-sm">
-        <h3 className="font-semibold text-[15px] tracking-tight text-foreground mb-4">
-          Akses Menu Cepat
-        </h3>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          {/* Athlete Management */}
-          <a
-            href="/coach/athlete"
-            className="flex items-center justify-between rounded-xl border border-border/50 bg-background/50 p-4 hover:bg-muted/30 hover:border-violet-300 dark:hover:border-violet-800 transition duration-150 group"
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-xl">🥋</span>
-              <div>
-                <h4 className="font-medium text-[14px] text-foreground">Kelola Atlet</h4>
-                <p className="text-xs text-muted-foreground">Cari, tambah, edit data atlet binaan</p>
-              </div>
-            </div>
-            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-          </a>
-
-          {/* School List */}
-          <a
-            href="/coach/school"
-            className="flex items-center justify-between rounded-xl border border-border/50 bg-background/50 p-4 hover:bg-muted/30 hover:border-emerald-300 dark:hover:border-emerald-800 transition duration-150 group"
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-xl">🏫</span>
-              <div>
-                <h4 className="font-medium text-[14px] text-foreground">Sekolah Binaan</h4>
-                <p className="text-xs text-muted-foreground">Lihat daftar sekolah mitra pelatihan</p>
-              </div>
-            </div>
-            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-          </a>
-        </div>
+      <div className="rounded-2xl border border-border/50 bg-card justify-center items-center p-6 shadow-sm">
+        <img src="/welcome.avif" alt="" className="item-center" />
       </div>
     </div>
   );

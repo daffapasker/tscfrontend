@@ -31,7 +31,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             </h1>
             
             <p className="brand-subtitle text-sm sm:text-base text-zinc-400 max-w-md lg:max-w-none">
-              Platform digital untuk mendukung pengelolaan data anggota, informasi kegiatan, serta proses pembinaan atlet secara efektif, terstruktur, dan berkelanjutan.
+              Portal Akademik untuk pengelolaan data anggota, dokumen kegiatan, dan informasi kegiatan klub
             </p>
           </section>
 

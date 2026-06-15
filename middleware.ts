@@ -5,7 +5,7 @@ type Role = "pengurus" | "pelatih";
 
 const roleDashboardMap: Record<Role, string> = {
   pengurus: "/staff/dashboard",
-  pelatih: "/coach/dashboard",
+  pelatih: "/coach/athlete",
 };
 
 const decodeBase64Url = (value: string) => {

@@ -42,16 +42,19 @@ import {
   Calendar,
   Award,
   School as SchoolIcon,
+  School,
+  Users,
 } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
 
 // ── Belt Badge Styles ────────────────────────────────────────────────────────
 const beltStyles: Record<string, string> = {
-  putih:    "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700",
-  kuning:   "bg-yellow-50 text-yellow-700 dark:bg-yellow-950/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-900/50",
-  biru:     "bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400 border-blue-200 dark:border-blue-900/50",
-  coklat:   "bg-amber-50 text-amber-800 dark:bg-amber-950/20 dark:text-amber-400 border-amber-200 dark:border-amber-900/50",
-  merah:    "bg-red-50 text-red-700 dark:bg-red-950/20 dark:text-red-400 border-red-200 dark:border-red-900/50",
-  hitam:    "bg-zinc-900 text-zinc-100 dark:bg-zinc-800 dark:text-zinc-100 border-zinc-900 dark:border-zinc-850",
+  putih: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700",
+  kuning: "bg-yellow-50 text-yellow-700 dark:bg-yellow-950/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-900/50",
+  biru: "bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400 border-blue-200 dark:border-blue-900/50",
+  coklat: "bg-amber-50 text-amber-800 dark:bg-amber-950/20 dark:text-amber-400 border-amber-200 dark:border-amber-900/50",
+  merah: "bg-red-50 text-red-700 dark:bg-red-950/20 dark:text-red-400 border-red-200 dark:border-red-900/50",
+  hitam: "bg-zinc-900 text-zinc-100 dark:bg-zinc-800 dark:text-zinc-100 border-zinc-900 dark:border-zinc-850",
 };
 
 function BeltBadge({ belt }: { belt?: string | null }) {
@@ -187,6 +190,36 @@ export default function CoachAthletePage() {
   const [editSchoolId, setEditSchoolId] = useState("");
   const [editImageUrl, setEditImageUrl] = useState("");
   const [editImagePreview, setEditImagePreview] = useState("");
+
+  const [loadingStats, setLoadingStats] = useState(true);
+  const [athleteCount, setAthleteCount] = useState(0);
+  const [schoolCount, setSchoolCount] = useState(0);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [athleteRes, schoolRes] = await Promise.all([
+          athleteService.getByCoach(),
+          schoolService.list(),
+        ]);
+
+        const athletes = athleteRes?.data ?? athleteRes ?? [];
+        const schools = schoolRes?.data ?? schoolRes ?? [];
+
+        setAthleteCount(athletes.length);
+        setSchoolCount(schools.length);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingStats(false);
+      }
+    }
+
+    loadData();
+  }, []);
+
+  const coachName = String(user?.name || user?.username || "Pelatih");
 
   // Create school map for O(1) resolutions
   const schoolMap = useMemo(() => {
@@ -394,9 +427,10 @@ export default function CoachAthletePage() {
       {/* ── Page Header ── */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-[20px] font-semibold tracking-tight text-foreground">
-            Kelola Atlet
-          </h1>
+          <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+              Selamat Datang, {coachName}!
+            </h1>
+        
           <p className="text-[13px] text-muted-foreground mt-0.5">
             Daftar, cari, dan kelola data atlet Trisula Sport Club
           </p>
@@ -409,6 +443,48 @@ export default function CoachAthletePage() {
           <Plus className="w-3.5 h-3.5" />
           Tambah Atlet
         </Button>
+      </div>
+
+          <div className="grid gap-5 md:grid-cols-2">
+        {/* Total Atlet */}
+        <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition duration-200 group">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Total Atlet Binaan
+              </p>
+              <h3 className="text-3xl font-extrabold tracking-tight text-foreground">
+                {loading ? "..." : athleteCount}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                Atlet terdaftar di Trisula Sport Club
+              </p>
+            </div>
+            <div className="h-12 w-12 rounded-xl flex items-center justify-center bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-200">
+              <Users className="h-6 w-6" />
+            </div>
+          </div>
+        </div>
+
+        {/* Total Sekolah */}
+        <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition duration-200 group">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Sekolah Binaan
+              </p>
+              <h3 className="text-3xl font-extrabold tracking-tight text-foreground">
+                {loading ? "..." : schoolCount}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                Sekolah mitra penugasan latihan
+              </p>
+            </div>
+            <div className="h-12 w-12 rounded-xl flex items-center justify-center bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-200">
+              <School className="h-6 w-6" />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ── Error Banner ── */}
@@ -582,10 +658,10 @@ export default function CoachAthletePage() {
                     <TableCell className="text-[13px] text-muted-foreground py-3">
                       {athlete.birthdate
                         ? new Date(athlete.birthdate).toLocaleDateString("id-ID", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
                         : "—"}
                     </TableCell>
 
@@ -672,9 +748,8 @@ export default function CoachAthletePage() {
               <Input
                 placeholder="Masukkan nama lengkap atlet"
                 {...createForm.register("name")}
-                className={`h-8 text-[13px] rounded-lg border-border/60 focus-visible:ring-1 focus-visible:ring-violet-500/40 ${
-                  createForm.formState.errors.name ? "border-red-500" : ""
-                }`}
+                className={`h-8 text-[13px] rounded-lg border-border/60 focus-visible:ring-1 focus-visible:ring-violet-500/40 ${createForm.formState.errors.name ? "border-red-500" : ""
+                  }`}
               />
               {createForm.formState.errors.name && (
                 <span className="text-[11px] text-red-500">{createForm.formState.errors.name.message}</span>
@@ -687,9 +762,8 @@ export default function CoachAthletePage() {
                   type="date"
                   {...createForm.register("birthdate")}
                   max={new Date().toISOString().split("T")[0]}
-                  className={`h-8 text-[13px] rounded-lg border-border/60 focus-visible:ring-1 focus-visible:ring-violet-500/40 ${
-                    createForm.formState.errors.birthdate ? "border-red-500" : ""
-                  }`}
+                  className={`h-8 text-[13px] rounded-lg border-border/60 focus-visible:ring-1 focus-visible:ring-violet-500/40 ${createForm.formState.errors.birthdate ? "border-red-500" : ""
+                    }`}
                 />
                 {createForm.formState.errors.birthdate && (
                   <span className="text-[11px] text-red-500">{createForm.formState.errors.birthdate.message}</span>
@@ -699,9 +773,8 @@ export default function CoachAthletePage() {
               <FormField label="Warna Sabuk">
                 <select
                   {...createForm.register("belt")}
-                  className={`h-8 w-full rounded-lg border border-border/60 bg-background px-3 text-[13px] text-foreground focus:ring-1 focus:ring-violet-500/40 focus:border-violet-500 outline-none ${
-                    createForm.formState.errors.belt ? "border-red-500" : ""
-                  }`}
+                  className={`h-8 w-full rounded-lg border border-border/60 bg-background px-3 text-[13px] text-foreground focus:ring-1 focus:ring-violet-500/40 focus:border-violet-500 outline-none ${createForm.formState.errors.belt ? "border-red-500" : ""
+                    }`}
                 >
                   <option value="putih">Putih</option>
                   <option value="kuning">Kuning</option>
@@ -716,9 +789,8 @@ export default function CoachAthletePage() {
             {/* School Dropdown Select */}
             <FormField label="Sekolah">
               <select
-                className={`h-8 w-full rounded-lg border border-border/60 bg-background px-3 text-[13px] text-foreground focus:ring-1 focus:ring-violet-500/40 focus:border-violet-500 outline-none ${
-                  createForm.formState.errors.schools ? "border-red-500" : ""
-                }`}
+                className={`h-8 w-full rounded-lg border border-border/60 bg-background px-3 text-[13px] text-foreground focus:ring-1 focus:ring-violet-500/40 focus:border-violet-500 outline-none ${createForm.formState.errors.schools ? "border-red-500" : ""
+                  }`}
                 onChange={(e) => {
                   createForm.setValue("schools", e.target.value ? [e.target.value] : []);
                 }}
@@ -758,7 +830,7 @@ export default function CoachAthletePage() {
                     <User className="h-5 w-5" />
                   </div>
                 )}
-                
+
                 <div className="flex-1 min-w-0">
                   <input
                     type="file"
@@ -907,7 +979,7 @@ export default function CoachAthletePage() {
                     <User className="h-5 w-5" />
                   </div>
                 )}
-                
+
                 <div className="flex-1 min-w-0">
                   <input
                     type="file"
@@ -1009,10 +1081,10 @@ export default function CoachAthletePage() {
                   value={
                     selectedAthlete.birthdate
                       ? new Date(selectedAthlete.birthdate).toLocaleDateString("id-ID", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                      })
                       : "—"
                   }
                 />

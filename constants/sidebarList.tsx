@@ -69,11 +69,11 @@ export const staffSettingsItems: SidebarItem[] = [
 ];
 
 export const coachMenuItems: SidebarItem[] = [
-  {
-    title: "Dashboard",
-    icon: LayoutDashboard,
-    href: "/coach/dashboard",
-  },
+  // {
+  //   title: "Dashboard",
+  //   icon: LayoutDashboard,
+  //   href: "/coach/dashboard",
+  // },
   {
     title: "Athlete",
     icon: PersonStanding,

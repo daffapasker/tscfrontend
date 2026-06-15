@@ -49,7 +49,7 @@ export default function useLoginCoach() {
       queryClient.invalidateQueries({ queryKey: authKey.me() });
       toast.success("Login successful");
       reset();
-      router.push("/coach/dashboard");
+      router.push("/coach/athlete");
 
       // Cek callbackUrl dari URL Params
       const callbackUrl = searchParams.get("callbackUrl");
