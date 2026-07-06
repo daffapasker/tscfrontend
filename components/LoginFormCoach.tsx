@@ -4,6 +4,7 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import useLoginCoach from "@/hooks/useLoginCoach";
 import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
 
 export default function LoginForm() {
   const { control, errors, handlerSignIn, isPendingSignIn } = useLoginCoach();
@@ -52,9 +53,9 @@ export default function LoginForm() {
           <input type="checkbox" />
           <span>Ingat saya</span>
         </label>
-        <a className="forgot-link" href="#">
+        <Button variant="link" className="forgot-link" onClick={() => router.push("/forgot-password")}>
           Lupa password?
-        </a>
+        </Button>
       </div>
 
       <div className="flex flex-col gap-4 mt-4">
