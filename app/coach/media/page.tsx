@@ -118,7 +118,7 @@ function FormField({ label, children }: { label: string; children: React.ReactNo
 export default function CoachMediaPage() {
   // Main lists states
   const { data: mediaList = [], isLoading: loading } = useMediaList();
-  const { data: athletes = [] } = useAthletes({ limit: 1000 });
+  const { data: athletes = [] } = useAthletes({ limit: 1000 }, { useCoach: true });
   const { data: schools = [] } = useSchools({ limit: 1000 });
 
   // Search & Filter states

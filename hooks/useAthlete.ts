@@ -11,11 +11,18 @@ import type { IAthlete, ICreateAthlete, IUpdateAthlete } from "@/types/Athlete";
 
 // ─── Query: daftar atlet ────────────────────────────────────────────────────
 
-export function useAthletes(params?: Record<string, any>) {
+export function useAthletes(
+  params?: Record<string, any>,
+  options?: { useCoach?: boolean }
+) {
+  const useCoach = options?.useCoach ?? false;
+
   return useQuery<IAthlete[]>({
-    queryKey: athleteKey.lists(),
+    queryKey: [...athleteKey.lists(), useCoach ? "coach" : "all"],
     queryFn: async () => {
-      const res = await athleteService.list(params);
+      const res = useCoach
+        ? await athleteService.getByCoach(params)
+        : await athleteService.list(params);
       const data = Array.isArray(res) ? res : (res?.data ?? []);
       return data;
     },
