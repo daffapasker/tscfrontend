@@ -8,7 +8,7 @@ import { Button } from "./ui/button";
 
 export default function LoginForm() {
   const { control, errors, handlerSignIn, isPendingSignIn } = useLogin();
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <form onSubmit={handlerSignIn} className="auth-form">
@@ -48,7 +48,7 @@ export default function LoginForm() {
         {errors.password && <div className="auth-error">{errors.password.message}</div>}
       </div>
 
-      <div className="auth-options">
+      {/* <div className="auth-options">
         <label className="remember-me">
           <input type="checkbox" />
           <span>Ingat saya</span>
@@ -56,6 +56,12 @@ export default function LoginForm() {
         <Button variant="link" className="forgot-link" onClick={() => router.push("/forgot-password")}>
           Lupa password?
         </Button>
+      </div> */}
+      <div className="auth-options">
+        <label className="remember-me">
+        <input type="checkbox" />
+        <span>Ingat saya</span>
+        </label>
       </div>
 
       <div className="flex flex-col gap-4 mt-4">
